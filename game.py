@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import hero
+import gem
 
 pygame.init()
 #Khởi tạo cửa sổ game và tên game
@@ -15,6 +16,8 @@ f_game = pygame.font.Font('fonts/font_game.otf',32)
 # background
 bg_game = pygame.image.load('./img/bg_game.jpg')
 bg_game = pygame.transform.scale(bg_game, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+time_gem_start = 0
 #Vòng lặp game
 running = True
 while running:
@@ -25,7 +28,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         # Tất cả các event nên code trong file chính của game
-        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                hero.attack()
+                print(hero.lst_bullet)
     # Setup sự kiện đè phím
     key = pygame.key.get_pressed()
     if key[pygame.K_DOWN]:
@@ -41,6 +47,25 @@ while running:
     screen.blit(bg_game, (0,0))
     # draw hero
     hero.draw_hero(screen)
+    # Xử lý va chạm
+    for bullect_rect in hero.lst_bullet:
+        if bullect_rect.colliderect(gem.gem_rect):
+            gem.gem_rect.x = random.randint(0, screen.get_width()- gem.gem_rect.width)
+            gem.gem_rect.y = random.randint(0, screen.get_height() - gem.gem_rect.height)
+            print('va cham')
+        # Xử lý tăng điểm
+        
+        
+        
+        
+        
+    # draw gem
+    time_current_gem = pygame.time.get_ticks()
+    if time_current_gem - time_gem_start >= 10000:
+        gem.gem_rect.x = random.randint(0, screen.get_width() - gem.gem_rect.width)
+        gem.gem_rect.y = random.randint(0, screen.get_height() - gem.gem_rect.height)
+        time_gem_start = time_current_gem
+    gem.draw_gem(screen)
     #Cập nhật game
     pygame.display.flip()
     
